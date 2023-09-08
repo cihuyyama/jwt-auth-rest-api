@@ -6,8 +6,8 @@ import {
     pre,
     DocumentType,
 } from "@typegoose/typegoose";
+import {nanoid} from 'nanoid'
 import argon2 from "argon2";
-import { nanoid } from "nanoid";
 import log from "../utils/logger";
 
 @pre<User>("save", async function () {
@@ -28,6 +28,7 @@ import log from "../utils/logger";
     },
 })
 export class User {
+
     @prop({ lowercase: true, required: true, unique: true })
     email: string;
 
@@ -37,7 +38,8 @@ export class User {
     @prop({ required: true })
     password: string;
 
-    @prop({ required: true, default: () => nanoid })
+    @prop({
+        required: true, default: () => nanoid()})
     verificationCode: string;
 
     @prop()

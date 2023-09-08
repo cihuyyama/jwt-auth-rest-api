@@ -20,4 +20,8 @@ export const createUserSchema = object({
     })
 })
 
+export const verifyUserSchema = object({
+    
+})
+
 export type CreateUserInput = TypeOf<typeof createUserSchema>['body']

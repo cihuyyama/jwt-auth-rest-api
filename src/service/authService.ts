@@ -17,7 +17,7 @@ export async function signRefreshToken({ userId }: { userId: string }) {
         {session: session.id},
         "refreshTokenPrivateKey",
         {
-            expiresIn: '24h',
+            expiresIn: '1h',
         }
     )
 
@@ -36,3 +36,8 @@ export function signAccessToken(user: DocumentType<User>) {
 
     return accessToken
 }
+
+export async function findSessionById(id: string) {
+    return SessionModel.findById(id)
+}
+

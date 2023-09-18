@@ -1,11 +1,13 @@
 import { Request, Response } from "express";
 import { CreateSessionInput } from "../schema/authSchema";
-import { findUserByEmail } from "../service/userService";
-import { signAccessToken, signRefreshToken } from "../service/authService";
+import { findUserByEmail, findUserById } from "../service/userService";
+import { findSessionById, signAccessToken, signRefreshToken } from "../service/authService";
+import { get } from "lodash";
+import { verifyJwt } from "../utils/jwt";
 
-export async function createSessionHandler(req: Request<{},{},CreateSessionInput>, res: Response) {
+export async function createSessionHandler(req: Request<{}, {}, CreateSessionInput>, res: Response) {
     const message = "Invalid email or password"
-    const {email, password} = req.body
+    const { email, password } = req.body
 
     const user = await findUserByEmail(email)
 
@@ -34,4 +36,30 @@ export async function createSessionHandler(req: Request<{},{},CreateSessionInput
         refreshToken
     })
 
+}
+
+export async function refreshAccessTokenHandler(req: Request, res: Response) {
+    const refreshToken = String(get(req, 'headers.x-refresh'))
+
+    const decoded = verifyJwt<{ session: string }>(refreshToken, 'refreshTokenPublicKey')
+
+    if (!decoded) {
+        return res.status(401).send("Could not refresh access token")
+    }
+
+    const session = await findSessionById(decoded.session)
+
+    if (!session || !session.valid) {
+        return res.status(401).send("Could not refresh access token")
+    }
+
+    const user = await findUserById(String(session.user))
+
+    if (!user) {
+        return res.status(401).send("Could not refresh access token")
+    }
+
+    const accessToken = signAccessToken(user)
+
+    return res.send({ accessToken })
 }

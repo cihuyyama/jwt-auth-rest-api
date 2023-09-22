@@ -5,8 +5,14 @@ import connectToDb from "./utils/connectToDb";
 import log from "./utils/logger";
 import router from "./routes";
 import deserializeUser from "./middleware/deserializeUser";
+import cors from 'cors'
 
 const app = express();
+
+app.use(cors({
+    origin: '*',
+    credentials: true
+}))
 
 app.use(express.json())
 

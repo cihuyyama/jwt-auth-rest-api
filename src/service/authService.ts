@@ -17,11 +17,9 @@ export async function signRefreshToken({ userId }: { userId: string }) {
         {session: session.id},
         "refreshTokenPrivateKey",
         {
-            expiresIn: '1h',
+            expiresIn: '5h',
         }
     )
-
-    console.log(refreshToken)
 
     return refreshToken
 }
@@ -31,7 +29,7 @@ export function signAccessToken(user: DocumentType<User>) {
     const payload = omit(user.toJSON(), privateFields)
 
     const accessToken = signJwt(payload, "accessTokenPrivateKey", {
-        expiresIn: '5s'
+        expiresIn: '15m'
     })
 
     return accessToken

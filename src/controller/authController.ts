@@ -4,6 +4,7 @@ import { findUserByEmail, findUserById } from "../service/userService";
 import { findSessionById, signAccessToken, signRefreshToken } from "../service/authService";
 import { get } from "lodash";
 import { verifyJwt } from "../utils/jwt";
+import { getEmail } from "../utils/mailer";
 
 export async function createSessionHandler(req: Request<{}, {}, CreateSessionInput>, res: Response) {
     const message = "Invalid email or password"
@@ -14,6 +15,7 @@ export async function createSessionHandler(req: Request<{}, {}, CreateSessionInp
     if (!user) {
         return res.send(message)
     }
+
 
     if (!user.verified) {
         return res.send("Please verify your email")

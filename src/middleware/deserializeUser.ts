@@ -13,12 +13,8 @@ const deserializeUser = async (req: Request, res: Response, next: NextFunction) 
     const decoded2 = verifyJwt(accessToken, "refreshTokenPublicKey")
 
     if (decoded) {
-        console.log(decoded)
-        console.log(decoded2)
         res.locals.user = decoded
     } else {
-        console.log(decoded)
-        console.log(decoded2)
         res.sendStatus(401)
         return next()
     }

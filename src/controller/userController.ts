@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { CreateUserInput, ForgotPasswordInput, ResetPasswordInput, VerifyUserInput } from "../schema/userSchema";
 import { createUser, findUserByEmail, findUserById } from "../service/userService";
 import { nanoid } from 'nanoid'
-import sendEmail from "../utils/mailer";
+import sendEmail, { getEmail } from "../utils/mailer";
 import log from "../utils/logger";
 
 export async function createUserHandler(req: Request<{}, {}, CreateUserInput>, res: Response) {
@@ -11,14 +11,17 @@ export async function createUserHandler(req: Request<{}, {}, CreateUserInput>, r
     try {
         const user = await createUser(body)
 
-        await sendEmail({
+        const emailVerif = await getEmail({
             from: 'test@mail.com',
             to: user.email,
             subject: "Please verification here",
             text: `Verification Code ${user.verificationCode}. Id: ${user.id}`
         })
 
-        return res.send("User succesfully created")
+        return res.status(200).json({
+            "message": "User succesfully created",
+            "url": emailVerif
+        })
     } catch (e: any) {
         if (e.code === 11000) {
             return res.status(409).send("Account already exists")

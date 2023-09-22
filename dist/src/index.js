@@ -13,6 +13,9 @@ const deserializeUser_1 = __importDefault(require("./middleware/deserializeUser"
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use(deserializeUser_1.default);
+app.get('/', (req, res) => {
+    return res.send("App is Running");
+});
 app.use(routes_1.default);
 const port = config_1.default.get("port");
 app.listen(port, () => {

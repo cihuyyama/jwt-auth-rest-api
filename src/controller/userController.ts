@@ -79,15 +79,18 @@ export async function forgotPasswordHandler(req: Request<{}, {}, ForgotPasswordI
     await user.save()
 
 
-    await sendEmail({
+    const emailVerif = await getEmail({
+        from: 'test@mail.com',
         to: user.email,
-        from: "resettest@mail.com",
-        subject: "Reset your password",
-        text: `Password reset code: ${passwordResetCode}. Id ${user._id}`
+        subject: "Please verification here",
+        text: `Verification Code ${user.verificationCode}. Id: ${user.id}`
     })
 
     log.debug(`Password reset email sent to ${email}`)
-    return res.send(message)
+    return res.status(200).json({
+        "message": "User succesfully created",
+        "url": emailVerif
+    })
 }
 
 export async function resetPasswordHandler(req: Request<ResetPasswordInput['params'], {}, ResetPasswordInput['body']>, res: Response) {

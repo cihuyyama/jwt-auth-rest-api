@@ -1,2 +1,5 @@
 .env
 node_modules
+production.postman_environment.json
+notes-api-webserver.pem
+JWT Auth API.postman_collection.json

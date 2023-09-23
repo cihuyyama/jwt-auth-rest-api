@@ -19,7 +19,7 @@ app.use(express.json())
 app.use(deserializeUser)
 
 app.get('/',(req: express.Request, res: express.Response)=>{
-    return res.send("App is Running")
+    return res.send("App is Running").end()
 })
 
 app.use(router)
